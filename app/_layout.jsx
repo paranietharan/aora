@@ -11,7 +11,6 @@
 import React, { useEffect } from 'react';
 import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
-import { Slot } from 'expo-router'
 import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
