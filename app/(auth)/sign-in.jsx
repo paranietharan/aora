@@ -6,6 +6,8 @@ import images from '../../constants/images';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import { Link } from 'expo-router';
+import { signIn } from '../../lib/appwrite'
+
 
 const SignIn = () => {
 
@@ -13,8 +15,31 @@ const SignIn = () => {
     email: '',
     password: ''
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const submit = async () => {
+    console.log("submitting", form);
+
+    if (form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      console.log("trying to sign in");
+      await signIn(form.email, form.password);
+
+      Alert.alert("Success", "User signed in successfully");
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -42,7 +67,7 @@ const SignIn = () => {
           <CustomButton
             title="Sign In"
             containerStyles="mt-7"
-            handlePress={() => console.log(form)}
+            handlePress={() => submit()}
             isLoading={isSubmitting}
           />
 
