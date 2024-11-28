@@ -7,7 +7,17 @@ import { StatusBar } from 'expo-status-bar';
 
 import { Redirect, router } from 'expo-router';
 
+import {useGlobalContext} from '../context/GlobalProvider';
+
 export default function App() {
+  // Update variable names to match context
+  const { loading, isLogged } = useGlobalContext();
+
+  // Update condition to match context values
+  if (!loading && isLogged) {
+    return <Redirect href="/home" />;
+  }
+  
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ height: '100%' }}>
