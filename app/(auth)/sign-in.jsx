@@ -1,15 +1,18 @@
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import images from '../../constants/images';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
-import { Link } from 'expo-router';
-import { signIn } from '../../lib/appwrite'
+import { router, Link } from 'expo-router';
+import { signIn, getCurrentUser } from '../../lib/appwrite'
 
+import { useGlobalContext } from '../../context/GlobalProvider';
 
 const SignIn = () => {
+
+  const { setIsLogged, setUser } = useGlobalContext();
 
   const [form, setForm] = useState({
     email: '',
@@ -18,9 +21,31 @@ const SignIn = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = async () => {
-    console.log("submitting", form);
+  // const submit = async () => {
+  //   console.log("submitting", form);
 
+  //   if (form.email === "" || form.password === "") {
+  //     Alert.alert("Error", "Please fill in all fields");
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     console.log("trying to sign in");
+  //     await signIn(form.email, form.password);
+  //     setUser(result);
+  //     setIsLogged(true);
+
+  //     Alert.alert("Success", "User signed in successfully");
+  //     router.replace("/home");
+  //   } catch (error) {
+  //     Alert.alert("Error", error.message);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+  const submit = async () => {
     if (form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
       return;
@@ -30,12 +55,28 @@ const SignIn = () => {
 
     try {
       console.log("trying to sign in");
-      await signIn(form.email, form.password);
+      const session = await signIn(form.email, form.password);
 
-      Alert.alert("Success", "User signed in successfully");
-      router.replace("/home");
+      if (session) {
+        // Get user data after successful session creation
+        const userData = await getCurrentUser();
+
+        if (userData) {
+          setUser(userData);
+          setIsLogged(true);
+          Alert.alert("Success", "User signed in successfully", [
+            {
+              text: "OK",
+              onPress: () => router.replace("/home")
+            }
+          ]);
+        } else {
+          throw new Error("Failed to get user data");
+        }
+      }
     } catch (error) {
-      Alert.alert("Error", error.message);
+      console.error("Sign in error:", error);
+      Alert.alert("Error", error.message || "Failed to sign in");
     } finally {
       setIsSubmitting(false);
     }
