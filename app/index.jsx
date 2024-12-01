@@ -7,7 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import { Redirect, router } from 'expo-router';
 
-import {useGlobalContext} from '../context/GlobalProvider';
+import { useGlobalContext } from '../context/GlobalProvider';
 
 export default function App() {
   // Update variable names to match context
@@ -17,7 +17,7 @@ export default function App() {
   if (!loading && isLogged) {
     return <Redirect href="/home" />;
   }
-  
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ height: '100%' }}>
@@ -53,9 +53,17 @@ export default function App() {
           </Text>
 
           <CustomButton
-            title="Continue with Email" 
+            title="Continue with Email"
             className="w-full mt-7"
             handlePress={() => router.push("/sign-in")}
+          />
+
+          <View className="h-4" />
+
+          <CustomButton
+            title="Guest Mode"
+            className="w-full mt-7"
+            handlePress={() => router.push("/home")}
           />
         </View>
       </ScrollView>
