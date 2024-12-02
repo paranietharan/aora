@@ -59,12 +59,6 @@ export default function App() {
           />
 
           <View className="h-4" />
-
-          <CustomButton
-            title="Guest Mode"
-            className="w-full mt-7"
-            handlePress={() => router.push("/home")}
-          />
         </View>
       </ScrollView>
 
